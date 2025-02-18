@@ -1,102 +1,64 @@
-<!doctype html>
-<html lang="en" dir="ltr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <title>:: Ericsson :: Courses Details</title>
-
-    <!-- Bootstrap Core and vandor -->
-    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
-
-    <!-- Core css -->
-    <link rel="stylesheet" href="../assets/css/style.min.css" />
-</head>
-
-<body class="font-muli theme-cyan gradient">
-
-    <!-- Page Loader -->
-    <div class="page-loader-wrapper">
-        <div class="loader">
+{% extends 'navbar.html' %}
+{% load static %}
+{% block body %}
+<div class="section-body">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center ">
+            <div class="header-action">
+                <h1 class="page-title">Course Details</h1>
+                <ol class="breadcrumb page-breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">GrievEase</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Courses</li>
+                </ol>
+            </div>
         </div>
     </div>
-
-    <div id="main_content">
-        <div class="page">
-            <div class="section-body">
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-between align-items-center ">
-                        <div class="header-action">
-                            <h1 class="page-title">Course Details</h1>
-                            <ol class="breadcrumb page-breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">GrievEase</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Courses</li>
-                            </ol>
-                        </div>
+</div>
+<div class="tab-pane mt-4" id="Courses-add">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Course Details</h3>
+        </div>
+        <div class="card-body">
+            <div class="row clearfix">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Department Name" readonly>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane mt-4" id="Courses-add">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Course Details</h3>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Course Name">
                     </div>
-                    <div class="card-body">
-                        <div class="row clearfix">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Department Name" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Course Name">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <select class="form-control show-tick">
-                                    <option value="">-- Co-ordinator --</option>
-                                    <option value="10">Prof. Raihan Patel</option>
-                                    <option value="20">Prof. kartik Joshi</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-6">
-                                <select class="form-control show-tick">
-                                    <option value="">-- Duration --</option>
-                                    <option value="10">2 Years</option>
-                                    <option value="20">3 Years</option>
-                                    <option value="10">4 Years</option>
-                                    <option value="20">5 Years</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-12 mt-3">
-                                <div class="form-group">
-                                    <textarea rows="4" class="form-control no-resize" placeholder="Brief"></textarea>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-primary">Update</button>
-                                <a href="courses.html"><button type="submit" class="btn btn-outline-secondary btn-default">Cancel</button></a>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control show-tick">
+                        <option value="">-- Co-ordinator --</option>
+                        <option value="10">Prof. Raihan Patel</option>
+                        <option value="20">Prof. kartik Joshi</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control show-tick">
+                        <option value="">-- Duration --</option>
+                        <option value="10">2 Years</option>
+                        <option value="20">3 Years</option>
+                        <option value="10">4 Years</option>
+                        <option value="20">5 Years</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 mt-3">
+                    <div class="form-group">
+                        <textarea rows="4" class="form-control no-resize" placeholder="Brief"></textarea>
                     </div>
+                </div>
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a href="{% url 'courses' %}"><button type="submit"
+                            class="btn btn-outline-secondary btn-default">Cancel</button></a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Start Main project js, jQuery, Bootstrap -->
-    <script src="../assets/bundles/lib.vendor.bundle.js"></script>
-
-    <!-- Start Plugin Js -->
-    <script src="../assets/plugins/sweetalert/sweetalert.min.js"></script>
-    <script src="../assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
-
-    <!-- Start project main js  and page js -->
-    <script src="../assets/js/core.js"></script>
-    <script src="assets/js/page/dialogs.js"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}
