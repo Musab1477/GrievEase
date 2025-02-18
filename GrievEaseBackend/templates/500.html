@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en" dir="ltr">
 <head>
@@ -10,10 +11,10 @@
 <title>:: Epic :: 500</title>
 
 <!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}" />
 
 <!-- Core css -->
-<link rel="stylesheet" href="../assets/css/style.min.css"/>
+<link rel="stylesheet" href="{% static 'css/style.min.css' %}"/>
 
 </head>
 <body class="font-muli theme-cyan gradient">
@@ -32,9 +33,9 @@
 </div>
 
 <!-- Start Main project js, jQuery, Bootstrap -->
-<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+<script src="{% static 'bundles/lib.vendor.bundle.js' %}"></script>
 
 <!-- Start project main js  and page js -->
-<script src="../assets/js/core.js"></script>
+<script src="{% static 'js/core.js' %}"></script>
 </body>
 </html>
