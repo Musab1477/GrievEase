@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +77,12 @@ WSGI_APPLICATION = 'GrievEaseBackend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'grievease',
+        'USER': 'root',                 # Replace with your MySQL username
+        'PASSWORD': 'Mus@b1477',  # Your MySQL password
+        'HOST': '127.0.0.1',            # If using XAMPP or a local MySQL server
+        'PORT': '3306',                 # Default MySQL port
     }
 }
 
