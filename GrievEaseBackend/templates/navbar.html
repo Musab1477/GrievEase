@@ -56,11 +56,14 @@
                         <ul class="metismenu">
                             <li class="active"><a href="{% url 'home' %}"><i
                                         class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
-                            <li><a href="{% url 'professors' %}"><i class="fa fa-black-tie"></i><span>Professors</span></a>
+                            <li><a href="{% url 'professors' %}"><i
+                                        class="fa fa-black-tie"></i><span>Professors</span></a>
                             </li>
-                            <li><a href="{% url 'staff' %}"><i class="fa fa-user-circle-o"></i><span>Staff</span></a></li>
+                            <li><a href="{% url 'staff' %}"><i class="fa fa-user-circle-o"></i><span>Staff</span></a>
+                            </li>
                             <li><a href="{% url 'students' %}"><i class="fa fa-users"></i><span>Students</span></a></li>
-                            <li><a href="{% url 'courses' %}"><i class="fa fa-graduation-cap"></i><span>Courses</span></a></li>
+                            <li><a href="{% url 'courses' %}"><i
+                                        class="fa fa-graduation-cap"></i><span>Courses</span></a></li>
                         </ul>
                     </nav>
                 </div>
@@ -99,14 +102,22 @@
                                 </div>
                                 <div class="dropdown d-flex">
                                     <a href="javascript:void(0)" class="chip ml-3" data-toggle="dropdown">
-                                        <span class="avatar"
-                                            style="background-image: url(../assets/images/xs/avatar5.jpg)"></span>
-                                        George</a>
+                                        <span class="avatar">
+                                            <i class="fe fe-user" style="font-size: 24px;"></i>
+                                        </span>
+                                        {% if request.session.user_name %}
+                                        {{ request.session.user_name }}
+                                        <!-- Display logged-in user's first name -->
+                                        {% else %}
+                                        Guest <!-- Default text if no user is logged in -->
+                                        {% endif %}
+                                    </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                        <a class="dropdown-item" href="#"><i
-                                                class="dropdown-icon fe fe-user"></i> Profile</a>
-                                        <a class="dropdown-item" href="#"><i
-                                                class="dropdown-icon fe fe-settings"></i> Settings</a>
+                                        {% if request.session.user_name %}
+                                        <a class="dropdown-item" href="#"><i class="dropdown-icon fe fe-user"></i>
+                                            Profile</a>
+                                        <a class="dropdown-item" href="#"><i class="dropdown-icon fe fe-settings"></i>
+                                            Settings</a>
                                         <a class="dropdown-item" href="#"><span class="float-right"><span
                                                     class="badge badge-primary">6</span></span><i
                                                 class="dropdown-icon fe fe-mail"></i> Inbox</a>
@@ -115,8 +126,14 @@
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="javascript:void(0)"><i
                                                 class="dropdown-icon fe fe-help-circle"></i> Need help?</a>
-                                        <a class="dropdown-item" href="{% url 'login' %}"><i
+                                        <a class="dropdown-item" href="{% url 'logout' %}"><i
                                                 class="dropdown-icon fe fe-log-out"></i> Sign out</a>
+                                        {% else %}
+                                        <a class="dropdown-item" href="{% url 'login' %}"><i
+                                                class="dropdown-icon fe fe-log-in"></i> Sign in</a>
+                                        {% endif %}
+
+
                                     </div>
                                 </div>
                             </div>

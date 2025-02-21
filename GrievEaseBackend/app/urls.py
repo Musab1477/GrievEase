@@ -15,19 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-<<<<<<< HEAD
-from django.urls import path
-from app import views
-
-urlpatterns = [
-    path('',views.index, name='index'),
-=======
 from django.urls import path, include
 from .import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    
     # Web admin Url's
     path('', views.home, name='home'),
     path('university/404', views.notFoundError, name='NotFound'),
@@ -37,6 +28,7 @@ urlpatterns = [
     path('university/courses', views.courses, name='courses'),
     path('university/forgot-password', views.forgotPassword, name='forgot-password'),
     path('university/login', views.login, name='login'),
+    path('university/logout', views.logout, name='logout'),
     path('university/professor-details', views.professorDetails, name='professor-details'),
     path('university/professors', views.professors, name='professors'),
     path('university/register', views.register, name='register'),
@@ -45,5 +37,4 @@ urlpatterns = [
     path('university/student-details', views.studentDetails, name='student-details'),
     path('university/student-list', views.studentList, name='student-list'),
     path('university/students', views.students, name='students'),
->>>>>>> 54149b5d8aaee6e739d162c8910bdee7ef1be5aa
 ]
