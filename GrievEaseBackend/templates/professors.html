@@ -35,10 +35,11 @@
                                     <th>Number</th>
                                     <th>Department</th>
                                     <th>Course</th>
-                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
+                            {% for i in prof %}
+
                             <tr>
                                 <td class="w60">
                                     <div class="avatar avatar-pink" data-toggle="tooltip" data-placement="top" title=""
@@ -47,12 +48,11 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="font-15">Gladys J Smith</div>
+                                    <div class="font-15">{{ i.firstName}} {{i.lastName}}</div>
                                 </td>
-                                <td><span>(417) 646-8377</span></td>
-                                <td><span class="text-muted">FCAIT</span></td>
-                                <td>BCA</td>
-                                <td><span class="tag tag-success">Full-time</span></td>
+                                <td><span>+91 {{i.phoneNo}}</span></td>
+                                <td><span class="text-muted">{{i.course.deptId.deptName}}</span></td>
+                                <td>{{i.course.courseName}}</td>
                                 <td>
                                     <a href="{% url 'professor-details' %}"><button type="button"
                                             class="btn btn-icon btn-sm" title="Edit"><i
@@ -61,25 +61,8 @@
                                         data-type="confirm"><i class="fa fa-trash-o text-danger"></i></button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="w60">
-                                    <img class="avatar" src="../assets/images/xs/avatar1.jpg" alt="">
-                                </td>
-                                <td>
-                                    <div class="font-15">Alan Johnson</div>
-                                </td>
-                                <td><span>(417) 646-8377</span></td>
-                                <td><span class="text-muted">FCAIT</span></td>
-                                <td>MScIT</td>
-                                <td><span class="tag tag-warning">Part-time</span></td>
-                                <td>
-                                    <a href="{% url 'professor-details' %}"><button type="button"
-                                            class="btn btn-icon btn-sm" title="Edit"><i
-                                                class="fa fa-eye"></i></button></a>
-                                    <button type="button" class="btn btn-icon btn-sm js-sweetalert" title="Delete"
-                                        data-type="confirm"><i class="fa fa-trash-o text-danger"></i></button>
-                                </td>
-                            </tr>
+                            {% endfor %}
+
                         </tbody>
                     </table>
                 </div>

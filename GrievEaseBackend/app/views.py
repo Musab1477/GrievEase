@@ -3,7 +3,6 @@ from .models import *
 from django.contrib.auth.hashers import make_password
 from django.core.files.storage import default_storage
 import pandas as pd
-import os
 
 
 # Create your views here.
@@ -58,6 +57,7 @@ def professorDetails(request):
 def professors(request):
     courses = Course.objects.all()
     roles = Role.objects.all()
+    prof = Faculty.objects.all()
     if 'user_id' not in request.session:
         return redirect('login')
     
@@ -132,7 +132,7 @@ def professors(request):
                     'roles': roles,
                 })
 
-    return render(request, 'professors.html', {'admin': admin, 'courses': courses, 'roles': roles})
+    return render(request, 'professors.html', {'admin': admin, 'courses': courses, 'roles': roles, 'prof':prof})
 
 def register(request):
     return render(request, 'register.html')
