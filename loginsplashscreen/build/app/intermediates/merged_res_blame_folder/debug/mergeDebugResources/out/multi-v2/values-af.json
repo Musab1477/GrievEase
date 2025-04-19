@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.loginsplashscreen.app-mergeDebugResources-24:/values-af/values-af.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\aayri\\.gradle\\caches\\transforms-3\\b360521f96e1f4dc7c59bec5ce8230d0\\transformed\\core-1.13.1\\res\\values-af\\values-af.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,153,255,353,451,558,667,787",
+                        "endColumns": "97,101,97,97,106,108,119,100",
+                        "endOffsets": "148,250,348,446,553,662,782,883"
+                    }
+                }
+            ]
+        }
+    ]
+}
