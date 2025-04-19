@@ -10,6 +10,7 @@ admin.site.register(Course)
 admin.site.register(Category)
 admin.site.register(Student)
 admin.site.register(SupportStaff)
+admin.site.register(Grievance)
 
 class AdminUser(admin.ModelAdmin):
     list_display = ('firstName','lastName','phoneNo','email','show_password')  

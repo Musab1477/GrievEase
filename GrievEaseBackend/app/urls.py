@@ -37,4 +37,6 @@ urlpatterns = [
     path('university/student-details', views.studentDetails, name='student-details'),
     path('university/student-list', views.studentList, name='student-list'),
     path('university/students', views.students, name='students'),
+    path('faculty/login',views.professorAppLogin, name='professorapplogin'),
+    
 ]
