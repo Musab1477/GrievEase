@@ -34,7 +34,7 @@ class Role(models.Model):
     
     
 class Category(models.Model):
-    categoryId=models.IntegerField(primary_key=True,unique=True)
+    categoryId=models.AutoField(primary_key=True,unique=True)
     categoryName=models.CharField(max_length=20,null=True)
     
     def __str__(self):
@@ -127,3 +127,20 @@ class Admin(models.Model):
     
     
     
+class Grievance(models.Model):
+    user = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name="grievances")
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='grievances/', null=True, blank=True)
+    category =models.ForeignKey(Category, on_delete=models.CASCADE)
+    status = models.CharField(max_length=50, default="Pending")  # Pending, In Progress, Resolved
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+    @property
+    def image_url(self):
+        if self.image:
+            return self.image.url
+        return None
