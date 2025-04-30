@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'grievances_class.dart';
+import 'GlobalData.dart';
 
 class GrievanceFormScreen extends StatefulWidget {
   const GrievanceFormScreen({super.key});
@@ -13,146 +12,39 @@ class GrievanceFormScreen extends StatefulWidget {
 }
 
 class _GrievanceFormScreenState extends State<GrievanceFormScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String _title = "";
-  String _description = "";
-  String? _category = "Category 1";
-  List<File> _images = [];
+  TextEditingController title = TextEditingController();
+  TextEditingController description = TextEditingController();
+  String? _selectedCategory;
+  List<GrievanceImage> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
 
-  final List<String> _categories = [
-    'Category 1',
-    'Category 2',
-    'Category 3',
-    'Category 4',
-    'Category 5',
-  ];
-
-  Future<void> _pickImages(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    List<XFile> pickedImages = [];
-
-    if (source == ImageSource.gallery) {
-      pickedImages = await picker.pickMultiImage() ?? [];
-    } else {
-      while (true) {
-        final XFile? image = await picker.pickImage(source: source);
-        if (image == null) break;
-        pickedImages.add(image);
-        bool continueTaking = await _showCaptureMoreDialog();
-        if (!continueTaking) break;
+  Future<void> _pickImage() async {
+    try {
+      final List<XFile>? pickedImages = await _picker.pickMultiImage();
+      if (pickedImages != null) {
+        setState(() {
+          _selectedImages.addAll(
+            pickedImages.map((xFile) => GrievanceImage(path: xFile.path)).toList(),
+          );
+        });
       }
-    }
-
-    if (pickedImages.isNotEmpty) {
-      List<File> compressedImages = await _compressImages(pickedImages);
-      setState(() {
-        _images.addAll(compressedImages);
-      });
+    } catch (e) {
+      print('Error picking images: $e');
     }
   }
 
-  Future<bool> _showCaptureMoreDialog() async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Capture More?"),
-        content: const Text("Do you want to take another picture?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("No"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Yes"),
-          ),
-        ],
-      ),
-    ) ?? false;
-  }
-
-
-  Future<void> _requestStoragePermission() async {
-    if (Platform.isAndroid) {
-      final androidVersion = int.parse(Platform.version.split('.')[0]);
-      if (androidVersion >= 33) {
-        final photosStatus = await Permission.photos.request();
-        if (photosStatus.isGranted) {
-          await _pickImages(ImageSource.gallery);
-        } else {
-          _showPermissionDeniedMessage();
-        }
-      } else {
-        final status = await Permission.storage.request();
-        if (status.isGranted) {
-          await _pickImages(ImageSource.gallery);
-        } else {
-          _showPermissionDeniedMessage();
-        }
+  Future<void> _captureImage() async {
+    try {
+      final XFile? capturedImage = await _picker.pickImage(source: ImageSource.camera);
+      if (capturedImage != null) {
+        setState(() {
+          _selectedImages.add(GrievanceImage(path: capturedImage.path));
+        });
       }
+    } catch (e) {
+      print('Error capturing image: $e');
     }
   }
-
-  void _showPermissionDeniedMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Storage permission denied")),
-    );
-  }
-
-
-  Future<void> _requestCameraPermission() async {
-    final status = await Permission.camera.request();
-    if (status.isGranted) {
-      await _pickImages(ImageSource.camera);
-    } else if (status.isPermanentlyDenied) {
-      _showPermissionDialog();
-    } else {
-      _showPermissionDeniedMessage();
-    }
-  }
-
-  void _showPermissionDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Camera Permission Required"),
-        content: const Text("Please enable camera access in settings to capture images."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () => openAppSettings(),
-            child: const Text("Open Settings"),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  /// 🗜 Compress multiple images
-  Future<List<File>> _compressImages(List<XFile> images) async {
-    List<File> compressedImages = [];
-    for (XFile image in images) {
-      compressedImages.add(await _compressImage(File(image.path)));
-    }
-    return compressedImages;
-  }
-
-  /// 🗜 Compress a single image
-  Future<File> _compressImage(File file) async {
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      '${file.absolute.path}_compressed.jpg',
-      quality: 60,
-    );
-
-    return compressedFile != null ? File(compressedFile.path) : file;
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -171,118 +63,123 @@ class _GrievanceFormScreenState extends State<GrievanceFormScreen> {
           ),
           SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: "Title",
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a title";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _title = value!,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: "Title",
+                    border: OutlineInputBorder(),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: "Description",
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 4,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a description";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _description = value!,
+                  controller: title,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: "Description",
+                    border: OutlineInputBorder(),
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: "Category",
-                      border: OutlineInputBorder(),
-                    ),
-                    value: _category,
-                    items: _categories.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? value) {
-                      setState(() {
-                        _category = value;
-                      });
-                    },
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please select a category" : null,
+                  controller: description,
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: "Category",
+                    border: OutlineInputBorder(),
                   ),
+                  value: _selectedCategory,
+                  items: Grievance(
 
-                  const SizedBox(height: 16),
 
-                  Row(
+                  ).categories.map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedCategory = newValue;
+                    });
+                  },
+                  validator: (value) => value == null ? "Please select a category" : null,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _pickImage,
+                  child: const Text("Pick an Image from Gallery"),
+                ),
+                ElevatedButton(
+                  onPressed: _captureImage,
+                  child: const Text("Capture an Image"),
+                ),
+                const SizedBox(height: 16),
+                if (_selectedImages.isNotEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Upload Image", style: TextStyle(fontSize: 16)),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () => _pickImages(ImageSource.gallery),
-                        child: const Icon(Icons.image),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () => _pickImages(ImageSource.camera),
-                        child: const Icon(Icons.camera_alt),
+                      const Text('Selected Images:'),
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 100,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _selectedImages.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Image.file(
+                                File(_selectedImages[index].path),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
-                  if (_images.isNotEmpty)
-                    SizedBox(
-                      height: 100,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _images.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              File(_images[index].path), // Ensure proper display
-                              width: 100,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.error, size: 50, color: Colors.red);
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (title.text.isNotEmpty &&
+                        description.text.isNotEmpty &&
+                        _selectedCategory != null &&
+                        _selectedImages.isNotEmpty) {
+                      Grievance newGrievance = new Grievance();
+                      newGrievance.title = title.text;
+                      newGrievance.description =  description.text;
+                      newGrievance.category = _selectedCategory!;
+                      newGrievance.images = _selectedImages;
+                      GlobalData.lstGrievances.add(newGrievance);
+                      print(GlobalData.lstGrievances.length);
+                      Navigator.pop(context);
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Please fill all fields and select images.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
                               },
+                              child: const Text('OK'),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        print("Title: $_title");
-                        print("Description: $_description");
-                        print("Category: $_category");
-                        print("Image Paths: ${_images.map((image) => image.path).toList()}");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    ),
-                    child: const Text("Submit"),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   ),
-                ],
-              ),
+                  child: const Text("Submit"),
+                ),
+              ],
             ),
           ),
         ],

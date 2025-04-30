@@ -1,8 +1,19 @@
 from django.shortcuts import render,redirect
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from GrievEaseBackend.settings import SECRET_KEY
 from .models import *
+from .serializers import *
 from django.contrib.auth.hashers import make_password
 from django.core.files.storage import default_storage
+from django.http import JsonResponse
+import jwt, datetime
 import pandas as pd
+import json
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # Create your views here.
@@ -133,6 +144,35 @@ def professors(request):
                 })
 
     return render(request, 'professors.html', {'admin': admin, 'courses': courses, 'roles': roles, 'prof':prof})
+
+@api_view(["POST"])
+def professorAppLogin(request):
+    print("Hello")
+    serializer = FacultyAppLoginSerializer(data=request.data)
+
+    if serializer.is_valid():
+        email = serializer.validated_data["email"]
+        password = serializer.validated_data["password"]
+
+        # Check if faculty exists
+        try:
+            faculty = Faculty.objects.get(email=email)
+            if faculty.check_password(password):
+                # Generate JWT Token
+                payload = {
+                    "id": faculty.facultyId,
+                    "email": faculty.email,
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7),
+                }
+                token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+                return Response({"token": token, "message": "Login successful"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        except Faculty.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+        
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 def register(request):
     return render(request, 'register.html')

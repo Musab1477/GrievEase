@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'request_review.dart';
 import 'Grievance_list.dart';
-import 'update_grievance.dart';
-class GrievanceDetails extends StatefulWidget {
-  final String title;
-  final String desc;
-  final String date;
-  final String resolutiondate;
-  final String status;
+import 'dart:io';
+import 'grievances_class.dart';
 
-  const GrievanceDetails({
-    super.key,
-    required this.title,
-    required this.desc,
-    required this.date,
-    required this.resolutiondate,
-    required this.status,
-  });
+import 'update_grievance.dart';
+
+class GrievanceDetails extends StatefulWidget {
+  final Grievance grievance;
+
+  const GrievanceDetails({super.key, required this.grievance});
   @override
   State<GrievanceDetails> createState() => _GrievanceDetailsState();
 }
@@ -38,191 +31,218 @@ class _GrievanceDetailsState extends State<GrievanceDetails> {
                     color: Color.fromRGBO(0, 0, 0, 0.2),
                     offset: Offset(1.0, 1.0),
                   )
-                ])
-        ),
+                ])),
         centerTitle: true,
       ),
-      body:Column(
-        children: [
-         Row(
-           mainAxisAlignment: MainAxisAlignment.spaceAround,
-           children: [
-             _buildRoundedRectangleImage("assets/images/classroom1.jpeg"),
-             _buildRoundedRectangleImage("assets/images/library.jpeg"),
-             _buildRoundedRectangleImage("assets/images/library.jpeg"),
-           ],
-         ),
-          SizedBox(height: 8,),
-          Padding(
-            padding: const EdgeInsets.all(17.0),
-            child: _buildGrievanceCard(
-              title: widget.title,
-              desc: widget.desc,
-              date: widget.date,
-              resolutiondate: widget.resolutiondate,
-              status: widget.status,
-            ),
-            ),
-          SizedBox(height: 14,),
-          Text("Actions: ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Request a Review",style: TextStyle(fontSize: 18),),
-                IconButton(onPressed: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context)=>RequestReview()
-                  )
-                  );
-                }, icon: Icon(Icons.arrow_forward))
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Add an Update",style: TextStyle(fontSize: 18),),
-                IconButton(onPressed: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GrievanceScreenUpdate(
-                        title: widget.title, // Pass the title
-                        desc: widget.desc, // Pass the description
-                        resolutiondate: widget.resolutiondate, //Pass Resolution date
-                        status: widget.status,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.grievance.images.isNotEmpty)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: widget.grievance.images.map((image) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.file(
+                          File(image.path),
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(17.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Title: ",
+                        style: const TextStyle(
+                          fontFamily: 'Lexend',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        widget.grievance.title,
+                        style: const TextStyle(
+                          fontFamily: 'Lexend',
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        "Description: ",
+                        style: const TextStyle(
+                          fontFamily: 'Lexend',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          widget.grievance.description,
+                          style: const TextStyle(
+                            fontFamily: 'Lexend',
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        "Status: ",
+                        style: const TextStyle(
+                          fontFamily: 'Lexend',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        widget.grievance.status,
+                        style: const TextStyle(
+                          fontFamily: 'Lexend',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Text("Submitted on ",
+                              style: TextStyle(fontSize: 15, color: Colors.black38)),
+                          const SizedBox(width: 5),
+                          Text(
+                            widget.grievance.date,
+                            style: const TextStyle(
+                                fontFamily: 'Lexend', fontSize: 16, color: Colors.black38),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Resolution: ",
+                    style: const TextStyle(
+                      fontFamily: 'Lexend',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                }, icon: Icon(Icons.arrow_forward))
-              ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Text("Resolution Date ",
+                              style: TextStyle(fontSize: 15, color: Colors.black38)),
+                          const SizedBox(width: 5),
+                          Text(
+                            widget.grievance.resolutionDate,
+                            style: const TextStyle(
+                                fontFamily: 'Lexend', fontSize: 16, color: Colors.black38),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-
-    );
-  }
-  Widget _buildRoundedRectangleImage(String imagePath) {
-    return ClipRRect( // Clip the image to a rounded rectangle
-      borderRadius: BorderRadius.circular(10.0), // Adjust radius as needed
-      child: Image.asset(
-        imagePath,
-        height: 100, // Adjust height as needed
-        width: 100, // Adjust width as needed
-        fit: BoxFit.cover, // Or any BoxFit you want
-      ),
-    );
-  }
-
-  Widget _buildGrievanceCard({
-    required String title,
-    required String desc,
-    required String date,
-    required String resolutiondate,
-    required String status,
-  }){
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("Title: ",style: TextStyle(fontSize: 22,fontFamily: 'Lexend', fontWeight: FontWeight.bold,),),
-              SizedBox(width: 5,),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontFamily: 'Lexend',
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                ),
+            SizedBox(
+              height: 14,
+            ),
+            Text(
+              "Actions: ",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Request a Review",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context, MaterialPageRoute(builder: (context) => RequestReview()));
+                      },
+                      icon: Icon(Icons.arrow_forward)),
+                ],
               ),
-            ],
-          ),
-          SizedBox(height: 6,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("Description: ",style: TextStyle(fontSize: 22,fontFamily: 'Lexend', fontWeight: FontWeight.bold,),),
-              SizedBox(width: 5,),
-              Text(
-                desc,
-                style: const TextStyle(
-                  fontFamily: 'Lexend',
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 6,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("Status: ",style: TextStyle(fontSize: 22,fontFamily: 'Lexend', fontWeight: FontWeight.bold,),),
-              SizedBox(width: 5,),
-              Text(
-                status,
-                style: const TextStyle(
-                  fontFamily: 'Lexend',
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("Submitted on ",style: TextStyle(fontSize: 15,fontFamily: 'Lexend', fontWeight: FontWeight.normal,color: Colors.black38),),
-              SizedBox(width: 5,),
-              Text(
-                date,
-                style: const TextStyle(
-                  fontFamily: 'Lexend',
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black38
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 6,),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Add an Update",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GrievanceScreenUpdate(
+                            title: widget.grievance.title,
+                            desc: widget.grievance.description,
+                            resolutiondate: widget.grievance.resolutionDate,
+                            status: widget.grievance.status,
+                            imagePaths: widget.grievance.images.map((image) => image.path).toList(),
+                            category: widget.grievance.category,
 
-          Text("Resoulution",
-            style: TextStyle(fontSize: 22,
-                fontFamily: 'Lexend',
-                fontWeight: FontWeight.bold),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("Expected resoulution date",style: TextStyle(fontSize: 15,fontFamily: 'Lexend', fontWeight: FontWeight.normal,color: Colors.black38),),
-              SizedBox(width: 5,),
-              Text(
-                resolutiondate,
-                style: const TextStyle(
-                    fontFamily: 'Lexend',
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black38
-                ),
+                          ),
+                        ),
+                      ).then((updatedData) {
+                        if (updatedData != null) {
+                          setState(() {
+                            widget.grievance.title = updatedData['title'];
+                            widget.grievance.description = updatedData['description'];
+                            widget.grievance.category = updatedData['category'];
+                            widget.grievance.images = (updatedData['imagePaths'] as List<String>).map((path) => GrievanceImage(path: path)).toList();
+                          });
+                        }
+                      });
+                    },
+                    icon: Icon(Icons.arrow_forward),
+                  ),
+                ],
               ),
-            ],
-          ),
-
-
-
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
