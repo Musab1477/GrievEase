@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import secrets
 SECRET_KEY = secrets.token_hex(32)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMAPLATES_DIR = os.path.join(BASE_DIR, 'templates')
@@ -33,12 +34,16 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.AllowAny',  # Ensure anyone can access this endpoint
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Ensure anyone can access this endpoint
+    ],
 }
 
+AUTH_USER_MODEL = 'app.Student' 
 
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'studentId',
+}
 
 # Application definition
 
@@ -97,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'grievease',
         'USER': 'root',                 # Replace with your MySQL username
-        'PASSWORD': 'ayan@123',  # Your MySQL password
+        'PASSWORD': 'Mus@b1477',  # Your MySQL password
         'HOST': '127.0.0.1',            # If using XAMPP or a local MySQL server
         'PORT': '3306',                 # Default MySQL port
     }
