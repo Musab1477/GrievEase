@@ -14,7 +14,74 @@ import pandas as pd
 import json
 from django.views.decorators.csrf import csrf_exempt
 import traceback
-from django.contrib import messages
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from .models import Grievance, Category, GrievImages
+from .serializers import GrievanceCreateSerializer
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def grievance_create(request):
+    serializer = GrievanceCreateSerializer(data=request.data)
+    print(serializer)
+    if serializer.is_valid():
+        user = request.user
+        title = serializer.validated_data['title']
+        description = serializer.validated_data['description']
+        category_id = serializer.validated_data['category']
+        images = request.FILES.getlist('images')
+        
+        # print(title, description, user)
+
+        try:
+            category = Category.objects.get(categoryId=category_id)
+        except Category.DoesNotExist:
+            return Response({'error': 'Invalid category ID'}, status=400)
+
+        grievance = Grievance.objects.create(
+            user=user,
+            title=title,
+            description=description,
+            category=category
+        )
+
+        for img in images:
+            GrievImages.objects.create(grievance=grievance, images=img)
+
+        return Response({'message': 'Grievance submitted successfully'}, status=201)
+
+    return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_categories(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def grievance_list(request):
+    user = request.user
+    grievance = Grievance.objects.filter(user=user)
+    data = []
+    for grievance in grievance:
+        data.append({
+            "title": grievance.title,
+            "description": grievance.description,
+            "category": grievance.category.categoryName,  # or grievance.category.id
+            "status": grievance.status,
+            "created_at": grievance.created_at.strftime("%Y-%m-%d"),
+            "image_urls": grievance.image_urls  # uses @property
+        })
+    serializer = GrievanceFetchSerializer(data, many=True)
+    # print(serializer.data)
+    return Response(serializer.data)
 
 # Create your views here.
 def home(request):
@@ -323,10 +390,39 @@ def professors(request):
         'prof': prof
     })
     
+# @api_view(["POST"])
+# def professorAppLogin(request):
+#     print("Hello")
+#     serializer = FacultyAppLoginSerializer(data=request.data)
+
+#     if serializer.is_valid():
+#         email = serializer.validated_data["email"]
+#         password = serializer.validated_data["password"]
+
+#         # Check if faculty exists
+#         try:
+#             faculty = Faculty.objects.get(email=email)
+#             if faculty.check_password(password):
+#                 # Generate JWT Token
+#                 payload = {
+#                     "user_id": faculty.facultyId,
+#                     "email": faculty.email,
+#                     "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7),
+#                 }
+#                 token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+#                 return Response({"token": token, "message": "Login successful"}, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+#         except Faculty.DoesNotExist:
+#             return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+        
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(["POST"])
 def professorAppLogin(request):
+    # Print for debugging
     print("Hello")
-    serializer = FacultyAppLoginSerializer(data=request.data)
+    serializer = StudentLoginSerializer(data=request.data)
 
     if serializer.is_valid():
         email = serializer.validated_data["email"]
@@ -334,23 +430,26 @@ def professorAppLogin(request):
 
         # Check if faculty exists
         try:
-            faculty = Faculty.objects.get(email=email)
-            if faculty.check_password(password):
-                # Generate JWT Token
-                payload = {
-                    "id": faculty.facultyId,
-                    "email": faculty.email,
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7),
-                }
-                token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-                return Response({"token": token, "message": "Login successful"}, status=status.HTTP_200_OK)
+            student = Student.objects.get(email=email)
+            if student.check_password(password):
+                # Generate JWT Token using SimpleJWT
+                refresh = RefreshToken.for_user(student)
+                access_token = str(refresh.access_token)  # Access token is included in the refresh token
+
+                return Response(
+                    {"token": access_token, "message": "Login successful"},
+                    status=status.HTTP_200_OK,
+                )
             else:
-                return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-        except Faculty.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST
+                )
+        except Student.DoesNotExist:
+            return Response(
+                {"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST
+            )
         
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 def register(request):
     return render(request, 'register.html')

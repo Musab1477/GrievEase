@@ -38,5 +38,8 @@ urlpatterns = [
     path('university/student-list/<int:course_id>', views.studentList, name='student-list'),
     path('university/students', views.students, name='students'),
     path('faculty/login',views.professorAppLogin, name='professorapplogin'),
+    path('faculty/categories/', views.get_categories, name='categories'),
+    path('faculty/grievance/',views.grievance_create, name='grievancesubmission'),
+    path('api/grievances/',views.grievance_list, name='Grievances'),
     
 ]
