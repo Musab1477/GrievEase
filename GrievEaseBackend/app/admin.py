@@ -13,7 +13,7 @@ admin.site.register(Grievance)
 
 class AdminUser(admin.ModelAdmin):
     list_display = ('firstName','lastName','phoneNo','email','show_password')  
-    readonly_fields = ('password',) 
+    # readonly_fields = ('password',)
     
     def show_password(self, obj):
         return format_html(f"<code>{obj.password}</code>")

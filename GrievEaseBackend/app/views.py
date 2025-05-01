@@ -13,7 +13,7 @@ import jwt, datetime
 import pandas as pd
 import json
 from django.views.decorators.csrf import csrf_exempt
-
+import traceback
 
 
 # Create your views here.
@@ -147,25 +147,33 @@ def professors(request):
     courses = Course.objects.all()
     roles = Role.objects.all()
     prof = Faculty.objects.all()
+
     if 'user_id' not in request.session:
         return redirect('login')
     
-    admin=Admin.objects.get(adminId=request.session['user_id'])
+    admin = Admin.objects.get(adminId=request.session['user_id'])
+
     if request.method == 'POST':
-        if 'excel_file' in request.FILES:  # If bulk upload
+        if 'excel_file' in request.FILES:  # Bulk upload
             excel_file = request.FILES['excel_file']
             file_path = default_storage.save(f'uploads/{excel_file.name}', excel_file)
             file_path = default_storage.path(file_path)
 
             try:
-            
-                df = pd.read_excel(file_path)  # Read Excel file
+                df = pd.read_excel(file_path)
                 df.columns = ['uniqueId', 'firstName', 'lastName', 'phoneNo', 'email', 'gender', 'role', 'course', 'password']
-                
-                for _, row in df.iterrows():
+
+                errors = []
+
+                for index, row in df.iterrows():
                     try:
                         courseobj = Course.objects.get(courseName=row['course'])
                         roleobj = Role.objects.get(roleName=row['role'])
+
+                        # Basic field check (optional)
+                        if pd.isna(row['uniqueId']) or pd.isna(row['email']):
+                            raise ValueError("Missing uniqueId or email.")
+
                         Faculty.objects.create(
                             uniqueId=row['uniqueId'],
                             firstName=row['firstName'],
@@ -175,19 +183,38 @@ def professors(request):
                             gender=row['gender'],
                             role=roleobj,
                             course=courseobj,
-                            password=make_password(row['password'])  # Hash the password
+                            password=make_password(row['password'])
                         )
-                    except (Course.DoesNotExist, Role.DoesNotExist):
-                        continue  # Skip rows with invalid course/role IDs
-                return redirect('professors')
-            except Exception as e:
+                    except Exception as e:
+                        error_msg = f"[Row {index + 2}] Error: {e}"
+                        errors.append(error_msg)
+                        print(error_msg)
+                        traceback.print_exc()
+
+                if errors:
+                    print("\n=== Faculty Import Errors ===")
+                    for err in errors:
+                        print(err)
+                    print("==============================\n")
+
                 return render(request, 'professors.html', {
                     'admin': admin,
                     'courses': courses,
                     'roles': roles,
+                    'prof': prof
                 })
 
-        else:  # If single account creation
+            except Exception as e:
+                print("[General Excel Error]", e)
+                traceback.print_exc()
+                return render(request, 'professors.html', {
+                    'admin': admin,
+                    'courses': courses,
+                    'roles': roles,
+                    'prof': prof
+                })
+
+        else:  # Single faculty account creation
             uniqueid = request.POST['uniqueId']
             firstname = request.POST['firstName']
             lastname = request.POST['lastName']
@@ -201,7 +228,7 @@ def professors(request):
             try:
                 courseobj = Course.objects.get(courseName=course)
                 roleobj = Role.objects.get(roleName=role)
-                
+
                 Faculty.objects.create(
                     uniqueId=uniqueid,
                     firstName=firstname,
@@ -214,15 +241,24 @@ def professors(request):
                     password=make_password(password)
                 )
                 return redirect('professors')
-            except (Course.DoesNotExist, Role.DoesNotExist):
+
+            except Exception as e:
+                print("[Single Faculty Creation Error]", e)
+                traceback.print_exc()
                 return render(request, 'professors.html', {
                     'admin': admin,
                     'courses': courses,
                     'roles': roles,
+                    'prof': prof
                 })
 
-    return render(request, 'professors.html', {'admin': admin, 'courses': courses, 'roles': roles, 'prof':prof})
-
+    return render(request, 'professors.html', {
+        'admin': admin,
+        'courses': courses,
+        'roles': roles,
+        'prof': prof
+    })
+    
 @api_view(["POST"])
 def professorAppLogin(request):
     print("Hello")
