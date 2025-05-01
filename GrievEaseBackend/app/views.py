@@ -42,7 +42,7 @@ def addStudent(request):
             try:
             
                 df = pd.read_excel(file_path)  # Read Excel file
-                df.columns = ['uniqueId', 'firstName', 'lastName', 'phoneNo', 'email', 'gender', 'role', 'course', 'password']
+                df.columns = ['enrollmentNo', 'firstName', 'lastName', 'phoneNo', 'email', 'gender', 'role', 'course', 'password','division']
                 
                 for _, row in df.iterrows():
                     try:
@@ -57,13 +57,14 @@ def addStudent(request):
                             gender=row['gender'],
                             role=roleobj,
                             course=courseobj,
+                            division=['division'],
                             password=make_password(row['password'])  # Hash the password
                         )
                     except (Course.DoesNotExist, Role.DoesNotExist):
                         continue  # Skip rows with invalid course/role IDs
-                return redirect('professors')
+                return redirect('student-list')
             except Exception as e:
-                return render(request, 'professors.html', {
+                return render(request, 'add-student.html', {
                     'admin': admin,
                     'courses': courses,
                     'roles': roles,
@@ -97,9 +98,9 @@ def addStudent(request):
                     course=courseobj,
                     password=make_password(password)
                 )
-                return redirect('students')
+                return redirect('student-list')
             except (Course.DoesNotExist, Role.DoesNotExist):
-                return render(request, 'professors.html', {
+                return render(request, 'add-students.html', {
                     'admin': admin,
                     'courses': courses,
                     'roles': roles,
@@ -301,7 +302,10 @@ def studentDetails(request):
     return render(request, 'studentDetails.html')
 
 def studentList(request):
-    return render(request, 'student-list.html')
+    courses = Course.objects.all()
+    std = Student.objects.all()
+    return render(request, 'student-list.html',{'std':std,'courses':courses})
 
 def students(request):
-    return render(request, 'students.html')
+    std = Student.objects.all()
+    return render(request, 'students.html',{'std':std})

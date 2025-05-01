@@ -152,19 +152,23 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="row clearfix">
-                                    <div class="col-sm-12">
-                                        <div class="form-group mt-2 mb-3">
-                                            <input type="file" class="dropify">
-                                            <small id="fileHelp" class="form-text text-muted">Upload Excel
-                                                File to Create Multiple Accounts</small>
+                                <form action="{% url 'add-student' %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row clearfix">
+                                        <div class="col-sm-12">
+                                            <div class="form-group mt-2 mb-3">
+                                                <input type="file" class="dropify">
+                                                <small id="fileHelp" class="form-text text-muted">Upload Excel
+                                                    File to Create Multiple Accounts</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-outline-secondary">Cancel</button>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                        <button type="submit" class="btn btn-outline-secondary">Cancel</button>
-                                    </div>
-                                </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>

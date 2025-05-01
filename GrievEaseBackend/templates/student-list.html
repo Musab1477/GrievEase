@@ -48,23 +48,22 @@
                             <tr>
                                 <th>Enrollment No.</th>
                                 <th>Name</th>
-                                <th></th>
                                 <th>Course</th>
+                                <th>Division</th>
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for i in std %}
                             <tr>
-                                <td>201912345678912</td>
-                                <td class="w60">
-                                    <img class="avatar" src="../assets/images/xs/avatar1.jpg" alt="">
-                                </td>
-                                <td><span class="font-16">Ken Smith</span></td>
-                                <td>Science</td>
-                                <td>ken@gmail.com</td>
-                                <td>(417) 646-7483</td>
+                                <td>{{ i.enrollmentNo }}</td>
+                                <td><span class="font-16">{{ i.firstName}} {{i.lastName}}</span></td>
+                                <td>{{i.course.deptId.deptName}}</td>
+                                <td>{{ i.division }}</td>
+                                <td>{{ i.email }}</td>
+                                <td>{{ i.phoneNo }}</td>
                                 <td>
                                     <a href="{% url 'student-details' %}"><button type="button" class="btn btn-icon btn-sm"
                                             title="Edit"><i class="fa fa-eye"></i></button></a>
@@ -72,22 +71,7 @@
                                         data-type="confirm"><i class="fa fa-trash-o text-danger"></i></button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>201912345678978</td>
-                                <td class="w60">
-                                    <img class="avatar" src="../assets/images/xs/avatar2.jpg" alt="">
-                                </td>
-                                <td><span class="font-16">Gerald K Smith</span></td>
-                                <td>M.C.A.</td>
-                                <td>Gerald@gmail.com</td>
-                                <td>04 Jan, 2019</td>
-                                <td>
-                                    <a href="{% url 'student-details' %}"><button type="button" class="btn btn-icon btn-sm"
-                                            title="Edit"><i class="fa fa-eye"></i></button></a>
-                                    <button type="button" class="btn btn-icon btn-sm js-sweetalert" title="Delete"
-                                        data-type="confirm"><i class="fa fa-trash-o text-danger"></i></button>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
