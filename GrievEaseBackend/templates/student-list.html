@@ -56,14 +56,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for i in std %}
+                            {% for students in students %}
                             <tr>
-                                <td>{{ i.enrollmentNo }}</td>
-                                <td><span class="font-16">{{ i.firstName}} {{i.lastName}}</span></td>
-                                <td>{{i.course.deptId.deptName}}</td>
-                                <td>{{ i.division }}</td>
-                                <td>{{ i.email }}</td>
-                                <td>{{ i.phoneNo }}</td>
+                                <td>{{ students.enrollmentNo }}</td>
+                                <td><span class="font-16">{{ students.firstName}} {{students.lastName}}</span></td>
+                                <td>{{students.course.deptId.deptName}}</td>
+                                <td>{{ students.division }}</td>
+                                <td>{{ students.email }}</td>
+                                <td>{{ students.phoneNo }}</td>
                                 <td>
                                     <a href="{% url 'student-details' %}"><button type="button" class="btn btn-icon btn-sm"
                                             title="Edit"><i class="fa fa-eye"></i></button></a>

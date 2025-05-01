@@ -37,7 +37,7 @@
             <div class="col-6 col-md-4 col-xl-4">
                 <div class="card">
                     <div class="card-body ribbon">
-                        <div class="ribbon-box green" data-toggle="tooltip" title="New Professors">5</div>
+                        <div class="ribbon-box green" data-toggle="tooltip" title="New Professors">{{faculty_count}}</div>
                         <a href="{% url 'professors' %}" class="my_sort_cut text-muted">
                             <i class="fa fa-black-tie"></i>
                             <span>Professors</span>
@@ -48,7 +48,7 @@
             <div class="col-6 col-md-4 col-xl-4">
                 <div class="card">
                     <div class="card-body ribbon">
-                        <div class="ribbon-box orange" data-toggle="tooltip" title="New Staff">8</div>
+                        <div class="ribbon-box orange" data-toggle="tooltip" title="New Staff">{{staff_count}}</div>
                         <a href="{% url 'staff' %}" class="my_sort_cut text-muted">
                             <i class="fa fa-user-circle-o"></i>
                             <span>Staff</span>

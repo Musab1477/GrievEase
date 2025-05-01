@@ -39,30 +39,20 @@
                     </div>
                 </div>
                 <div class="row">
+                    {% for courses in courses %}
                     <div class="col-xl-3 col-lg-4 col-md-6">
                         <div class="card">
                             <div class="card-body text-center">
                                 <img class="card-profile-img" src="../assets/images/sm/avatar1.jpg" alt="">
-                                <h5 class="mb-1">MScIT</h5>
-                                <span class="mb-0">Dr. Vishal Narvani</span>
-                                <div class="text-muted mb-4 mt-3">+ (916) 369-7180</div>
-                                <a href="{% url 'student-list' %}"><button
+                                <h5 class="mb-1">{{courses.courseName}}</h5>
+                                <span class="mb-0">{{courses.coordinator.firstName}} {{courses.coordinator.lastName}}</span>
+                                <div class="text-muted mb-4 mt-3">(+91 ) {{courses.coordinator.phoneNo}}</div>
+                                <a href="{% url 'student-list' course_id=courses.courseId%}"><button
                                         class="btn btn-primary btn-sm">Students</button></a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img class="card-profile-img" src="../assets/images/sm/avatar2.jpg" alt="">
-                                <h5 class="mb-1">iMScIT</h5>
-                                <span class="mb-0">Prof. Rachana Chaudhry</span>
-                                <div class="text-muted mb-4 mt-3">+ (916) 369-7180</div>
-                                <a href="{% url 'student-list' %}"><button
-                                        class="btn btn-primary btn-sm">Students</button></a>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

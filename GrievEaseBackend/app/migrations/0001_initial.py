@@ -40,7 +40,6 @@ class Migration(migrations.Migration):
                 ('courseName', models.CharField(max_length=15, null=True)),
                 ('duration', models.CharField(max_length=15, null=True)),
                 ('description', models.TextField(blank=True, null=True)),
-                ('coardinator', models.CharField(max_length=15, null=True)),
                 ('deptId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='app.department')),
             ],
         ),
