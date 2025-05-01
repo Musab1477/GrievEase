@@ -1,0 +1,47 @@
+com.example.loginsplashscreen.app-preference-1.2.1-0 C:\Users\musab\.gradle\caches\transforms-3\03cc8ad359b41055f723f4bc67440c4e\transformed\preference-1.2.1\res
+com.example.loginsplashscreen.app-recyclerview-1.0.0-1 C:\Users\musab\.gradle\caches\transforms-3\0b63039981633d3c0fa7ef71e89b4893\transformed\recyclerview-1.0.0\res
+com.example.loginsplashscreen.app-core-1.13.1-2 C:\Users\musab\.gradle\caches\transforms-3\30556310b052096f4fa859bbd0d54c9d\transformed\core-1.13.1\res
+com.example.loginsplashscreen.app-jetified-core-ktx-1.13.1-3 C:\Users\musab\.gradle\caches\transforms-3\39e77b84068bd13fa53c115b40407774\transformed\jetified-core-ktx-1.13.1\res
+com.example.loginsplashscreen.app-lifecycle-livedata-core-2.7.0-4 C:\Users\musab\.gradle\caches\transforms-3\41fa6365ae32bf1f0de878a465a85bf1\transformed\lifecycle-livedata-core-2.7.0\res
+com.example.loginsplashscreen.app-jetified-appcompat-resources-1.1.0-5 C:\Users\musab\.gradle\caches\transforms-3\4e2db4fbbbd34b258972683f2196418b\transformed\jetified-appcompat-resources-1.1.0\res
+com.example.loginsplashscreen.app-core-runtime-2.2.0-6 C:\Users\musab\.gradle\caches\transforms-3\52996427143cfde2ea01e0c831033472\transformed\core-runtime-2.2.0\res
+com.example.loginsplashscreen.app-jetified-tracing-1.2.0-7 C:\Users\musab\.gradle\caches\transforms-3\5614917bc12885e3d18b5660af50b2d3\transformed\jetified-tracing-1.2.0\res
+com.example.loginsplashscreen.app-fragment-1.7.1-8 C:\Users\musab\.gradle\caches\transforms-3\5841767659ddd8508e6c617f3e123a5b\transformed\fragment-1.7.1\res
+com.example.loginsplashscreen.app-jetified-lifecycle-runtime-ktx-2.7.0-9 C:\Users\musab\.gradle\caches\transforms-3\6249d6a2470e1eecefbdd9afc20748f6\transformed\jetified-lifecycle-runtime-ktx-2.7.0\res
+com.example.loginsplashscreen.app-jetified-datastore-core-release-10 C:\Users\musab\.gradle\caches\transforms-3\64d81c3495f231d1dd17439d159337ab\transformed\jetified-datastore-core-release\res
+com.example.loginsplashscreen.app-jetified-datastore-preferences-release-11 C:\Users\musab\.gradle\caches\transforms-3\7276d22f8b8a319e63ed82a3ee284893\transformed\jetified-datastore-preferences-release\res
+com.example.loginsplashscreen.app-lifecycle-runtime-2.7.0-12 C:\Users\musab\.gradle\caches\transforms-3\77d9403018139badf37eacdb4a3ffc92\transformed\lifecycle-runtime-2.7.0\res
+com.example.loginsplashscreen.app-jetified-startup-runtime-1.1.1-13 C:\Users\musab\.gradle\caches\transforms-3\7d4f94bdca279d89983a4a00e29c6be7\transformed\jetified-startup-runtime-1.1.1\res
+com.example.loginsplashscreen.app-jetified-savedstate-ktx-1.2.1-14 C:\Users\musab\.gradle\caches\transforms-3\82f922e71c8316156d9a716992cef692\transformed\jetified-savedstate-ktx-1.2.1\res
+com.example.loginsplashscreen.app-jetified-lifecycle-viewmodel-savedstate-2.7.0-15 C:\Users\musab\.gradle\caches\transforms-3\8513b45bd0509c0ed3f9ce9d10038f70\transformed\jetified-lifecycle-viewmodel-savedstate-2.7.0\res
+com.example.loginsplashscreen.app-lifecycle-viewmodel-2.7.0-16 C:\Users\musab\.gradle\caches\transforms-3\92ed4d89e8535634bfc7b77c68d57720\transformed\lifecycle-viewmodel-2.7.0\res
+com.example.loginsplashscreen.app-appcompat-1.1.0-17 C:\Users\musab\.gradle\caches\transforms-3\a4e5a065c43b06f34203bb2a10aaba21\transformed\appcompat-1.1.0\res
+com.example.loginsplashscreen.app-jetified-core-1.0.0-18 C:\Users\musab\.gradle\caches\transforms-3\ac3b7259222364d48d27804691588d32\transformed\jetified-core-1.0.0\res
+com.example.loginsplashscreen.app-transition-1.4.1-19 C:\Users\musab\.gradle\caches\transforms-3\b1e1a667eb947215bbabb19d40d7f435\transformed\transition-1.4.1\res
+com.example.loginsplashscreen.app-jetified-lifecycle-process-2.7.0-20 C:\Users\musab\.gradle\caches\transforms-3\be99fd6c7b75dbccf108f415027a3710\transformed\jetified-lifecycle-process-2.7.0\res
+com.example.loginsplashscreen.app-jetified-window-1.2.0-21 C:\Users\musab\.gradle\caches\transforms-3\c08e6692ac0da8b08e7674e28c0132c0\transformed\jetified-window-1.2.0\res
+com.example.loginsplashscreen.app-jetified-lifecycle-viewmodel-ktx-2.7.0-22 C:\Users\musab\.gradle\caches\transforms-3\c6c1f2330a7f326141f9a7330424b191\transformed\jetified-lifecycle-viewmodel-ktx-2.7.0\res
+com.example.loginsplashscreen.app-coordinatorlayout-1.0.0-23 C:\Users\musab\.gradle\caches\transforms-3\d5b309212728195a153e56f37d4023ea\transformed\coordinatorlayout-1.0.0\res
+com.example.loginsplashscreen.app-jetified-datastore-release-24 C:\Users\musab\.gradle\caches\transforms-3\d70ca123afcdd67ecd8d47f4f21f84b3\transformed\jetified-datastore-release\res
+com.example.loginsplashscreen.app-jetified-fragment-ktx-1.7.1-25 C:\Users\musab\.gradle\caches\transforms-3\db32a3b98bb3511c3fcdfa55f26f4e7f\transformed\jetified-fragment-ktx-1.7.1\res
+com.example.loginsplashscreen.app-slidingpanelayout-1.2.0-26 C:\Users\musab\.gradle\caches\transforms-3\ded103d431fa2472ca96c16b01578f17\transformed\slidingpanelayout-1.2.0\res
+com.example.loginsplashscreen.app-jetified-lifecycle-livedata-core-ktx-2.7.0-27 C:\Users\musab\.gradle\caches\transforms-3\e2c3526ee68d4e4f43e97da17cb0f942\transformed\jetified-lifecycle-livedata-core-ktx-2.7.0\res
+com.example.loginsplashscreen.app-jetified-savedstate-1.2.1-28 C:\Users\musab\.gradle\caches\transforms-3\e440cc9aee4671772cababa2ea2c5c2e\transformed\jetified-savedstate-1.2.1\res
+com.example.loginsplashscreen.app-jetified-window-java-1.2.0-29 C:\Users\musab\.gradle\caches\transforms-3\e686293e677002d965ae52f1ae6bae33\transformed\jetified-window-java-1.2.0\res
+com.example.loginsplashscreen.app-jetified-annotation-experimental-1.4.0-30 C:\Users\musab\.gradle\caches\transforms-3\ec84eb0b86a560dfbe017635bf918b62\transformed\jetified-annotation-experimental-1.4.0\res
+com.example.loginsplashscreen.app-jetified-profileinstaller-1.3.1-31 C:\Users\musab\.gradle\caches\transforms-3\ee9b62e8b564902b2d118b22a1df3c15\transformed\jetified-profileinstaller-1.3.1\res
+com.example.loginsplashscreen.app-jetified-activity-1.9.3-32 C:\Users\musab\.gradle\caches\transforms-3\f1616dd6d340432c28be72ffe7fc158f\transformed\jetified-activity-1.9.3\res
+com.example.loginsplashscreen.app-lifecycle-livedata-2.7.0-33 C:\Users\musab\.gradle\caches\transforms-3\f4d2de20ac976288dcff61e169acfc4f\transformed\lifecycle-livedata-2.7.0\res
+com.example.loginsplashscreen.app-jetified-activity-ktx-1.9.3-34 C:\Users\musab\.gradle\caches\transforms-3\f6ef1042657eca3061e8193ec74673c9\transformed\jetified-activity-ktx-1.9.3\res
+com.example.loginsplashscreen.app-debug-35 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\android\app\src\debug\res
+com.example.loginsplashscreen.app-main-36 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\android\app\src\main\res
+com.example.loginsplashscreen.app-pngs-37 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\app\generated\res\pngs\debug
+com.example.loginsplashscreen.app-resValues-38 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\app\generated\res\resValues\debug
+com.example.loginsplashscreen.app-packageDebugResources-39 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\app\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.loginsplashscreen.app-packageDebugResources-40 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\app\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.loginsplashscreen.app-debug-41 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\app\intermediates\merged_res\debug\mergeDebugResources
+com.example.loginsplashscreen.app-debug-42 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\flutter_image_compress_common\intermediates\packaged_res\debug\packageDebugResources
+com.example.loginsplashscreen.app-debug-43 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\flutter_plugin_android_lifecycle\intermediates\packaged_res\debug\packageDebugResources
+com.example.loginsplashscreen.app-debug-44 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\image_picker_android\intermediates\packaged_res\debug\packageDebugResources
+com.example.loginsplashscreen.app-debug-45 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\permission_handler_android\intermediates\packaged_res\debug\packageDebugResources
+com.example.loginsplashscreen.app-debug-46 D:\GLS\MScIT\GLS FIRST YEAR\GLS SEM-8\Capston 2\loginsplashscreen\build\shared_preferences_android\intermediates\packaged_res\debug\packageDebugResources

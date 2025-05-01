@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
 import 'faculty_feedback.dart';
 import 'grievance_list.dart';
 import 'settings.dart';
-import 'dart:math';
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,85 +12,172 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0; // Keep track of selected index
+  int _selectedIndex = 0;
   late List<Widget> _widgetOptions;
+
   @override
   void initState() {
     super.initState();
     _widgetOptions = [
-      HomeScreenContent(onItemTapped: _onItemTapped), // Pass callback
+      HomeScreenContent(onItemTapped: _onItemTapped),
       MyGrievancesScreen(),
       SettingsScreen(),
       FacultyFeedbackScreen(),
-
     ];
   }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: const Color(0xFFF5F5F5),
-    appBar: AppBar(
-      automaticallyImplyLeading: false,
-      title: Text("GrievEase",
-          style: TextStyle(
-              fontFamily: 'Lato',
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              color: Colors.purple[900],
-              shadows: const [
-                Shadow(
-                  blurRadius: 2.0,
-                  color: Color.fromRGBO(0, 0, 0, 0.2),
-                  offset: Offset(1.0, 1.0),
-                )
-              ]
-          )
-      ),
-      centerTitle: true,
-      elevation: 4,
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.notifications_active, size: 28),
-          color: Colors.purple[900],
-        ),
-      ],
-    ),
-
-
-    body: _widgetOptions[_selectedIndex], // Display selected widget
-
-    bottomNavigationBar: BottomNavigationBar(
-    items: const <BottomNavigationBarItem>[
-    BottomNavigationBarItem(
-    icon: Icon(Icons.home),
-    label: "Home",
-    ),
-    BottomNavigationBarItem(
-    icon: Icon(Icons.upload_file),
-    label: "Grievances",
-    ),
-    BottomNavigationBarItem(
-    icon: Icon(Icons.settings),
-    label: "Settings",
-    ),
-    ],
-    currentIndex: _selectedIndex,
-    selectedItemColor: Colors.purple[900],
-    unselectedItemColor: Colors.grey,
-    onTap: _onItemTapped,
-    ),
-    );
+  Future<bool> _onWillPop() async {
+    exit(0); // Close the app
   }
 
-
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF5F5F5),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("GrievEase",
+              style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.purple[900],
+                  shadows: const [
+                    Shadow(
+                      blurRadius: 2.0,
+                      color: Color.fromRGBO(0, 0, 0, 0.2),
+                      offset: Offset(1.0, 1.0),
+                    )
+                  ])),
+          centerTitle: true,
+          elevation: 4,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.notifications_active, size: 28),
+              color: Colors.purple[900],
+            ),
+          ],
+        ),
+        body: _widgetOptions[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.upload_file), label: "Grievances"),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.purple[900],
+          unselectedItemColor: Colors.grey,
+          onTap: _onItemTapped,
+        ),
+      ),
+    );
+  }
 }
+
+// import 'package:flutter/material.dart';
+// import 'login_screen.dart';
+// import 'faculty_feedback.dart';
+// import 'grievance_list.dart';
+// import 'settings.dart';
+// import 'dart:math';
+
+// class HomePage extends StatefulWidget {
+//   const HomePage({super.key});
+//
+//   @override
+//   State<HomePage> createState() => _HomePageState();
+// }
+//
+// class _HomePageState extends State<HomePage> {
+//   int _selectedIndex = 0; // Keep track of selected index
+//   late List<Widget> _widgetOptions;
+//   @override
+//   void initState() {
+//     super.initState();
+//     _widgetOptions = [
+//       HomeScreenContent(onItemTapped: _onItemTapped), // Pass callback
+//       MyGrievancesScreen(),
+//       SettingsScreen(),
+//       FacultyFeedbackScreen(),
+//
+//     ];
+//   }
+//   void _onItemTapped(int index) {
+//     setState(() {
+//       _selectedIndex = index;
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         backgroundColor: const Color(0xFFF5F5F5),
+//     appBar: AppBar(
+//       automaticallyImplyLeading: false,
+//       title: Text("GrievEase",
+//           style: TextStyle(
+//               fontFamily: 'Lato',
+//               fontSize: 28,
+//               fontWeight: FontWeight.w800,
+//               color: Colors.purple[900],
+//               shadows: const [
+//                 Shadow(
+//                   blurRadius: 2.0,
+//                   color: Color.fromRGBO(0, 0, 0, 0.2),
+//                   offset: Offset(1.0, 1.0),
+//                 )
+//               ]
+//           )
+//       ),
+//       centerTitle: true,
+//       elevation: 4,
+//       actions: [
+//         IconButton(
+//           onPressed: () {},
+//           icon: const Icon(Icons.notifications_active, size: 28),
+//           color: Colors.purple[900],
+//         ),
+//       ],
+//     ),
+//
+//
+//     body: _widgetOptions[_selectedIndex], // Display selected widget
+//
+//     bottomNavigationBar: BottomNavigationBar(
+//     items: const <BottomNavigationBarItem>[
+//     BottomNavigationBarItem(
+//     icon: Icon(Icons.home),
+//     label: "Home",
+//     ),
+//     BottomNavigationBarItem(
+//     icon: Icon(Icons.upload_file),
+//     label: "Grievances",
+//     ),
+//     BottomNavigationBarItem(
+//     icon: Icon(Icons.settings),
+//     label: "Settings",
+//     ),
+//     ],
+//     currentIndex: _selectedIndex,
+//     selectedItemColor: Colors.purple[900],
+//     unselectedItemColor: Colors.grey,
+//     onTap: _onItemTapped,
+//     ),
+//     );
+//   }
+//
+//
+// }
 
 
 

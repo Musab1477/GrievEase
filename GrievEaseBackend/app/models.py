@@ -34,7 +34,7 @@ class Role(models.Model):
     
     
 class Category(models.Model):
-    categoryId=models.IntegerField(primary_key=True,unique=True)
+    categoryId=models.AutoField(primary_key=True,unique=True)
     categoryName=models.CharField(max_length=20,null=True)
     
     def __str__(self):
@@ -55,6 +55,14 @@ class Student(models.Model):
     admissionDate=models.DateTimeField(null=True)
     role=models.ForeignKey(Role,null=True,blank=True,on_delete=models.SET_NULL)
     course=models.ForeignKey(Course,null=True,blank=True,on_delete=models.SET_NULL)
+    
+    def save(self, *args, **kwargs):
+        if not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+        
+    def check_password(self, plain_password):
+        return check_password(plain_password,self.password)
     
     def __str__(self):
         return self.firstName
@@ -127,3 +135,20 @@ class Admin(models.Model):
     
     
     
+class Grievance(models.Model):
+    user = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name="grievances")
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='grievances/', null=True, blank=True)
+    category =models.ForeignKey(Category, on_delete=models.CASCADE)
+    status = models.CharField(max_length=50, default="Pending")  # Pending, In Progress, Resolved
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+    @property
+    def image_url(self):
+        if self.image:
+            return self.image.url
+        return None
