@@ -10,21 +10,6 @@ class Department(models.Model):
     def __str__(self):
         return self.deptName
     
-    
-    
-class Course(models.Model):
-    courseId=models.IntegerField(primary_key=True,unique=True)
-    deptId = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
-    courseName=models.CharField(max_length=15,null=True)
-    duration = models.CharField(max_length=15,null=True)
-    description = models.TextField(blank=True, null=True)
-    coardinator=models.CharField(max_length=15,null=True)
-    
-    
-    def __str__(self):
-        return self.courseName
-    
-    
 class Role(models.Model):
     roleId=models.IntegerField(primary_key=True,unique=True)
     roleName=models.CharField(max_length=20,null=True)
@@ -54,7 +39,7 @@ class Student(models.Model):
     password=models.CharField(max_length=256,null=True)
     admissionDate=models.DateTimeField(null=True)
     role=models.ForeignKey(Role,null=True,blank=True,on_delete=models.SET_NULL)
-    course=models.ForeignKey(Course,null=True,blank=True,on_delete=models.SET_NULL)
+    course=models.ForeignKey('Course',null=True,blank=True,on_delete=models.SET_NULL, related_name='students')
     
     def save(self, *args, **kwargs):
         if not self.password.startswith('pbkdf2_sha256$'):
@@ -79,7 +64,7 @@ class Faculty(models.Model):
     gender=models.CharField(max_length=10,null=True, choices=[('Male', 'Male'), ('Female', 'Female')])
     image=models.ImageField(upload_to='faculty_images/',null=True)
     role=models.ForeignKey(Role,null=True,blank=True,on_delete=models.SET_NULL)
-    course=models.ForeignKey(Course,null=True,blank=True,on_delete=models.SET_NULL)
+    course=models.ForeignKey('Course', null=True,blank=True,on_delete=models.SET_NULL)
     
     
     def save(self, *args, **kwargs):
@@ -100,11 +85,10 @@ class SupportStaff(models.Model):
     lastName=models.CharField(max_length=15,null=True)
     phoneNo=models.CharField(max_length=12,null=True)
     email=models.EmailField(max_length=20,null=True)
+    designation=models.CharField(max_length=20,null=True)
     password=models.CharField(max_length=256,null=True)
     gender=models.CharField(max_length=10,null=True,  choices=[('Male', 'Male'), ('Female', 'Female')])
     image=models.ImageField(upload_to='staff_images/',null=True)
-    designation=models.ForeignKey(Role,null=True,blank=True,on_delete=models.SET_NULL)
-    category=models.ForeignKey(Category,null=True,blank=True,on_delete=models.SET_NULL)
     
     def __str__(self):
         return self.firstName
@@ -152,3 +136,23 @@ class Grievance(models.Model):
         if self.image:
             return self.image.url
         return None
+    
+    
+class Course(models.Model):
+    DURATION_CHOICES = [
+        ('2 Years', '2 Years'),
+        ('3 Years', '3 Years'),
+        ('4 Years', '4 Years'),
+        ('5 Years', '5 Years'),
+    ]
+        
+    courseId=models.AutoField(primary_key=True,unique=True)
+    deptId = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
+    courseName=models.CharField(max_length=15,null=True)
+    duration = models.CharField(max_length=7, choices=DURATION_CHOICES, null=True)  
+    description = models.TextField(blank=True, null=True)
+    coordinator=models.ForeignKey(Faculty, null=True, blank=True, on_delete=models.SET_NULL, related_name='coordinator')
+    
+    def __str__(self):
+        return self.courseName
+    

@@ -12,7 +12,7 @@ admin.site.register(SupportStaff)
 admin.site.register(Grievance)
 
 class AdminUser(admin.ModelAdmin):
-    list_display = ('firstName','lastName','phoneNo','email','show_password')  
+    list_display = ('firstName','lastName','phoneNo','email')  
     # readonly_fields = ('password',)
     
     def show_password(self, obj):
@@ -23,7 +23,7 @@ class AdminUser(admin.ModelAdmin):
 admin.site.register(Admin, AdminUser)
 
 class FacultyUser(admin.ModelAdmin):
-    list_display = ('firstName','lastName','phoneNo','email','password')  
+    list_display = ('firstName','lastName','phoneNo','email')  
     readonly_fields = ('password',) 
     
     def show_password(self, obj):
@@ -34,7 +34,7 @@ class FacultyUser(admin.ModelAdmin):
 admin.site.register(Faculty, FacultyUser)
 
 class StudentUser(admin.ModelAdmin):
-    list_display = ('firstName','lastName','phoneNo','email','password')  
+    list_display = ('firstName','lastName','phoneNo','email')  
     readonly_fields = ('password',) 
     
     def show_password(self, obj):

@@ -14,11 +14,17 @@ import pandas as pd
 import json
 from django.views.decorators.csrf import csrf_exempt
 import traceback
-
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
-    return render(request, 'index.html')
+    faculty_count = Faculty.objects.count()
+    staff_count = SupportStaff.objects.count()
+    
+    return render(request, 'index.html', {
+        'faculty_count': faculty_count,
+        'staff_count': staff_count
+    })
 
 def notFoundError(request):
     return render(request, '404.html')
@@ -29,25 +35,32 @@ def internalError(request):
 def addStudent(request):
     courses = Course.objects.all()
     roles = Role.objects.all()
+
     if 'user_id' not in request.session:
         return redirect('login')
     
-    admin=Admin.objects.get(adminId=request.session['user_id'])
+    admin = Admin.objects.get(adminId=request.session['user_id'])
+
     if request.method == 'POST':
-        if 'excel_file' in request.FILES:  # If bulk upload
+        if 'excel_file' in request.FILES:  # Bulk upload
             excel_file = request.FILES['excel_file']
             file_path = default_storage.save(f'uploads/{excel_file.name}', excel_file)
             file_path = default_storage.path(file_path)
 
             try:
-            
-                df = pd.read_excel(file_path)  # Read Excel file
-                df.columns = ['enrollmentNo', 'firstName', 'lastName', 'phoneNo', 'email', 'gender', 'role', 'course', 'password','division']
-                
-                for _, row in df.iterrows():
+                df = pd.read_excel(file_path)
+                df.columns = ['enrollmentNo', 'firstName', 'lastName', 'phoneNo', 'email', 'gender', 'role', 'course', 'password', 'division']
+
+                errors = []
+
+                for index, row in df.iterrows():
                     try:
                         courseobj = Course.objects.get(courseName=row['course'])
                         roleobj = Role.objects.get(roleName=row['role'])
+
+                        if pd.isna(row['enrollmentNo']) or pd.isna(row['email']):
+                            raise ValueError("Missing enrollmentNo or email.")
+
                         Student.objects.create(
                             enrollmentNo=row['enrollmentNo'],
                             firstName=row['firstName'],
@@ -55,22 +68,31 @@ def addStudent(request):
                             phoneNo=row['phoneNo'],
                             email=row['email'],
                             gender=row['gender'],
+                            division=row['division'],
                             role=roleobj,
                             course=courseobj,
-                            division=['division'],
-                            password=make_password(row['password'])  # Hash the password
+                            password=make_password(row['password'])
                         )
-                    except (Course.DoesNotExist, Role.DoesNotExist):
-                        continue  # Skip rows with invalid course/role IDs
-                return redirect('student-list')
-            except Exception as e:
-                return render(request, 'add-student.html', {
-                    'admin': admin,
-                    'courses': courses,
-                    'roles': roles,
-                })
+                    except Exception as e:
+                        error_msg = f"[Row {index + 2}] Error: {e}"
+                        errors.append(error_msg)
+                        print(error_msg)
+                        traceback.print_exc()
 
-        else:  # If single account creation
+                if errors:
+                    print("\n=== Student Import Errors ===")
+                    for err in errors:
+                        print(err)
+                    print("==============================\n")
+
+                return redirect('students')
+
+            except Exception as e:
+                print("[General Excel Error]", e)
+                traceback.print_exc()
+                return redirect('students')
+
+        else:  # Single student creation
             enrollmentno = request.POST['enrollmentno']
             firstname = request.POST['firstname']
             lastname = request.POST['lastname']
@@ -85,7 +107,7 @@ def addStudent(request):
             try:
                 courseobj = Course.objects.get(courseName=course)
                 roleobj = Role.objects.get(roleName=role)
-                
+
                 Student.objects.create(
                     enrollmentNo=enrollmentno,
                     firstName=firstname,
@@ -98,21 +120,62 @@ def addStudent(request):
                     course=courseobj,
                     password=make_password(password)
                 )
-                return redirect('student-list')
-            except (Course.DoesNotExist, Role.DoesNotExist):
-                return render(request, 'add-students.html', {
-                    'admin': admin,
-                    'courses': courses,
-                    'roles': roles,
-                })
+                return redirect('students')
 
-    return render(request, 'add-student.html', {'admin': admin, 'courses': courses, 'roles': roles, })
+            except Exception as e:
+                print("[Single Student Creation Error]", e)
+                traceback.print_exc()
+                return redirect('students')
+
+    return render(request, 'add-student.html', {
+        'admin': admin,
+        'courses': courses,
+        'roles': roles,
+    })
 
 def courseDetails(request):
     return render(request, 'course-details.html')
 
 def courses(request):
-    return render(request, 'courses.html')
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    admin = Admin.objects.get(adminId=request.session['user_id'])
+
+    if request.method == 'POST':
+        course_name = request.POST.get('courseName')
+        duration = request.POST.get('duration')
+        description = request.POST.get('courseDesc')
+        coordinator_id = request.POST.get('coordinator')
+
+        if course_name and duration and coordinator_id:
+            try:
+                coordinator = Faculty.objects.get(facultyId=coordinator_id)
+                department = admin.department  # Assuming Admin has a ForeignKey to Department
+
+                Course.objects.create(
+                    deptId=department,
+                    courseName=course_name,
+                    duration=duration,
+                    description=description,
+                    coordinator=coordinator
+                )
+                messages.success(request, "Course added successfully!")
+                return redirect('courses')  # Reload to avoid re-submission on refresh
+            except Faculty.DoesNotExist:
+                messages.error(request, "Selected coordinator does not exist.")
+        else:
+            messages.error(request, "Please fill all required fields.")
+
+    # GET request or failed POST submission
+    courses_list = Course.objects.all()
+    faculty_list = Faculty.objects.all()
+    
+    return render(request, 'courses.html', {
+        'courses': courses_list,
+        'faculty': faculty_list,
+        'admin': admin
+    })
 
 def forgotPassword(request):
     return render(request, 'forgot-password.html')
@@ -296,16 +359,96 @@ def staffDetails(request):
     return render(request, 'staff-details.html')
 
 def staff(request):
-    return render(request, 'staff.html')
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    admin = Admin.objects.get(adminId=request.session['user_id'])
+    roles = Role.objects.all()
+    staff_list = SupportStaff.objects.all()
+
+    if request.method == 'POST':
+        if 'excel_file' in request.FILES:  # Bulk upload
+            excel_file = request.FILES['excel_file']
+            file_path = default_storage.save(f'uploads/{excel_file.name}', excel_file)
+            file_path = default_storage.path(file_path)
+
+            try:
+                df = pd.read_excel(file_path)
+                df.columns = ['firstName', 'lastName', 'phoneNo', 'email', 'designation', 'gender', 'password']
+                errors = []
+
+                for index, row in df.iterrows():
+                    try:
+                        if pd.isna(row['email']):
+                            raise ValueError("Missing email.")
+
+                        SupportStaff.objects.create(
+                            firstName=row['firstName'],
+                            lastName=row['lastName'],
+                            phoneNo=str(row['phoneNo']),
+                            email=row['email'],
+                            designation=row['designation'],
+                            gender=row['gender'],
+                            password=make_password(str(row['password']))
+                        )
+                    except Exception as e:
+                        error_msg = f"[Row {index + 2}] Error: {e}"
+                        errors.append(error_msg)
+                        print(error_msg)
+                        traceback.print_exc()
+
+                if errors:
+                    print("\n=== Bulk Upload Errors ===")
+                    for err in errors:
+                        print(err)
+                    print("================================\n")
+
+                return redirect('staff')
+
+            except Exception as e:
+                print("[General Excel Error]", e)
+                traceback.print_exc()
+
+        else:  # Single staff creation
+            firstname = request.POST['firstName']
+            lastname = request.POST['lastName']
+            phoneno = request.POST['phoneNo']
+            email = request.POST['email']
+            gender = request.POST['gender']
+            designation = request.POST['designation']
+            password = request.POST['password']
+
+            try:
+
+                SupportStaff.objects.create(
+                    firstName=firstname,
+                    lastName=lastname,
+                    phoneNo=phoneno,
+                    email=email,
+                    gender=gender,
+                    designation=designation,
+                    password=make_password(password)
+                )
+                return redirect('staff')
+
+            except Exception as e:
+                print("[Single Staff Creation Error]", e)
+                traceback.print_exc()
+
+    return render(request, 'staff.html', {
+        'admin': admin,
+        'roles': roles,
+        'staff_list': staff_list
+    })
 
 def studentDetails(request):
     return render(request, 'studentDetails.html')
 
-def studentList(request):
-    courses = Course.objects.all()
-    std = Student.objects.all()
-    return render(request, 'student-list.html',{'std':std,'courses':courses})
+def studentList(request, course_id):
+    course = Course.objects.get(courseId=course_id)
+    students = Student.objects.filter(course=course)
+    return render(request, 'student-list.html', {'students': students, 'course': course})
 
 def students(request):
-    std = Student.objects.all()
-    return render(request, 'students.html',{'std':std})
+    courses = Course.objects.all()
+    return render(request, 'students.html', {'courses': courses})
