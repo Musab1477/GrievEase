@@ -27,7 +27,85 @@ def internalError(request):
     return render(request, '500.html')
 
 def addStudent(request):
-    return render(request, 'add-student.html')
+    courses = Course.objects.all()
+    roles = Role.objects.all()
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    admin=Admin.objects.get(adminId=request.session['user_id'])
+    if request.method == 'POST':
+        if 'excel_file' in request.FILES:  # If bulk upload
+            excel_file = request.FILES['excel_file']
+            file_path = default_storage.save(f'uploads/{excel_file.name}', excel_file)
+            file_path = default_storage.path(file_path)
+
+            try:
+            
+                df = pd.read_excel(file_path)  # Read Excel file
+                df.columns = ['uniqueId', 'firstName', 'lastName', 'phoneNo', 'email', 'gender', 'role', 'course', 'password']
+                
+                for _, row in df.iterrows():
+                    try:
+                        courseobj = Course.objects.get(courseName=row['course'])
+                        roleobj = Role.objects.get(roleName=row['role'])
+                        Student.objects.create(
+                            enrollmentNo=row['enrollmentNo'],
+                            firstName=row['firstName'],
+                            lastName=row['lastName'],
+                            phoneNo=row['phoneNo'],
+                            email=row['email'],
+                            gender=row['gender'],
+                            role=roleobj,
+                            course=courseobj,
+                            password=make_password(row['password'])  # Hash the password
+                        )
+                    except (Course.DoesNotExist, Role.DoesNotExist):
+                        continue  # Skip rows with invalid course/role IDs
+                return redirect('professors')
+            except Exception as e:
+                return render(request, 'professors.html', {
+                    'admin': admin,
+                    'courses': courses,
+                    'roles': roles,
+                })
+
+        else:  # If single account creation
+            enrollmentno = request.POST['enrollmentno']
+            firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
+            phoneno = request.POST['phoneno']
+            email = request.POST['email']
+            gender = request.POST['gender']
+            role = request.POST['role']
+            division = request.POST['division']
+            course = request.POST['course']
+            password = request.POST['password']
+
+            try:
+                courseobj = Course.objects.get(courseName=course)
+                roleobj = Role.objects.get(roleName=role)
+                
+                Student.objects.create(
+                    enrollmentNo=enrollmentno,
+                    firstName=firstname,
+                    lastName=lastname,
+                    phoneNo=phoneno,
+                    email=email,
+                    gender=gender,
+                    role=roleobj,
+                    division=division,
+                    course=courseobj,
+                    password=make_password(password)
+                )
+                return redirect('students')
+            except (Course.DoesNotExist, Role.DoesNotExist):
+                return render(request, 'professors.html', {
+                    'admin': admin,
+                    'courses': courses,
+                    'roles': roles,
+                })
+
+    return render(request, 'add-student.html', {'admin': admin, 'courses': courses, 'roles': roles, })
 
 def courseDetails(request):
     return render(request, 'course-details.html')

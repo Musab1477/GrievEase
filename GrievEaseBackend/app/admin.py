@@ -8,7 +8,6 @@ from django.utils.html import format_html
 admin.site.register(Department)
 admin.site.register(Course)
 admin.site.register(Category)
-admin.site.register(Student)
 admin.site.register(SupportStaff)
 admin.site.register(Grievance)
 
@@ -33,6 +32,17 @@ class FacultyUser(admin.ModelAdmin):
     show_password.short_description = "Hashed Password"
 
 admin.site.register(Faculty, FacultyUser)
+
+class StudentUser(admin.ModelAdmin):
+    list_display = ('firstName','lastName','phoneNo','email','password')  
+    readonly_fields = ('password',) 
+    
+    def show_password(self, obj):
+        return format_html(f"<code>{obj.password}</code>")
+    
+    show_password.short_description = "Hashed Password"
+
+admin.site.register(Student, FacultyUser)
 
 class RoleClass(admin.ModelAdmin):
     list_display=('roleId','roleName')
