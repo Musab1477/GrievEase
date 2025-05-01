@@ -56,6 +56,14 @@ class Student(models.Model):
     role=models.ForeignKey(Role,null=True,blank=True,on_delete=models.SET_NULL)
     course=models.ForeignKey(Course,null=True,blank=True,on_delete=models.SET_NULL)
     
+    def save(self, *args, **kwargs):
+        if not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+        
+    def check_password(self, plain_password):
+        return check_password(plain_password,self.password)
+    
     def __str__(self):
         return self.firstName
     

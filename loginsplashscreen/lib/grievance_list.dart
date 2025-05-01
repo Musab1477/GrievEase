@@ -129,6 +129,7 @@ class _MyGrievancesScreenState extends State<MyGrievancesScreen> {
                 ),
                 const SizedBox(height: 8),
                 Row(
+
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
@@ -151,27 +152,27 @@ class _MyGrievancesScreenState extends State<MyGrievancesScreen> {
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GrievanceDetails(
-                              grievance: grievance,
-                            ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1980e6),
-                        foregroundColor: Colors.white,
-                        textStyle: const TextStyle(fontSize: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text("Open"),
-                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => GrievanceDetails(
+                    //           grievance: grievance,
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: const Color(0xFF1980e6),
+                    //     foregroundColor: Colors.white,
+                    //     textStyle: const TextStyle(fontSize: 14),
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(8.0),
+                    //     ),
+                    //   ),
+                    //   child: const Text("Open"),
+                    // ),
                   ],
                 ),
               ],
