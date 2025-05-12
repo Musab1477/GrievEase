@@ -22,6 +22,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from .models import Grievance, Category, GrievImages
 from .serializers import GrievanceCreateSerializer
+from django.contrib import messages
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -87,10 +88,12 @@ def grievance_list(request):
 def home(request):
     faculty_count = Faculty.objects.count()
     staff_count = SupportStaff.objects.count()
+    griev_count = Grievance.objects.count()
     
     return render(request, 'index.html', {
         'faculty_count': faculty_count,
-        'staff_count': staff_count
+        'staff_count': staff_count,
+        'griev_count' : griev_count
     })
 
 def notFoundError(request):
@@ -243,6 +246,25 @@ def courses(request):
         'faculty': faculty_list,
         'admin': admin
     })
+    
+def assign_grievance(request, gid):
+    grievance = Grievance.objects.get(id=gid)
+
+    if request.method == 'POST':
+        staff_id = request.POST.get('staff')
+        print(staff_id)
+        if staff_id:
+            user = SupportStaff.objects.get(staffId=staff_id)
+            print(user)
+            grievance.assigned_staff = user
+            grievance.save()
+            return redirect('staff')  # or wherever you want
+
+    return redirect('grievance')  # fallback or error case
+    
+def grievances(request):
+    grievance = Grievance.objects.all()
+    return render(request,'grievance.html',{'grievance':grievance})
 
 def forgotPassword(request):
     return render(request, 'forgot-password.html')
@@ -548,6 +570,12 @@ def studentList(request, course_id):
     students = Student.objects.filter(course=course)
     return render(request, 'student-list.html', {'students': students, 'course': course})
 
+def grievancelist(request,gid):
+    grievance = Grievance.objects.get(id=gid)
+    staff = SupportStaff.objects.all()
+    return render(request,'grievancedetails.html',{'grievance': grievance, 'staff': staff})
+
 def students(request):
     courses = Course.objects.all()
     return render(request, 'students.html', {'courses': courses})
+

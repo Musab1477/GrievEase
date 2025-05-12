@@ -63,32 +63,38 @@ class _GrievanceScreenUpdateState extends State<GrievanceScreenUpdate> {
 
   // In update_grievance.dart:
   Future<void> _pickImages() async {
-    final picker = ImagePicker();
-    final pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
-      List<File> images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList(); // Convert XFile to File
-      List<File> compressedImages = await _compressImages(images);
-      setState(() {
-        _images.addAll(compressedImages);
-      });
+    final ImagePicker picker = ImagePicker();
+    final List<XFile>? pickedImages = await picker.pickMultiImage();
+
+    if (pickedImages != null) {
+      List<File> imageFiles = pickedImages.map((xfile) => File(xfile.path)).toList();
+      List<File> compressedImages = await _compressImages(imageFiles);
+      // Now use compressedImages for upload or display
     }
   }
 
 
-  Future<List<File>> _compressImages(List<File> images) async { // Corrected: List<File>
+  Future<List<File>> _compressImages(List<File> images) async {
     List<File> compressedImages = [];
-    for (File image in images) {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    for (int i = 0; i < images.length; i++) {
+      File image = images[i];
+      String targetPath = '${image.parent.path}/compressed_$timestamp\_$i.jpg';
+
       final compressedFile = await FlutterImageCompress.compressAndGetFile(
         image.path,
-        '${image.path}.jpg',
-        quality: 88,
+        targetPath,
+        quality: 85,
       );
+
       if (compressedFile != null) {
-        compressedImages.add(File(compressedFile.path));      }
+        compressedImages.add(compressedFile as File);
+      }
     }
+
     return compressedImages;
   }
-
   Future<void> _requestPermissions() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.camera,
