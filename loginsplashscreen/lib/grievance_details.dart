@@ -47,12 +47,18 @@ class _GrievanceDetailsState extends State<GrievanceDetails> {
                       padding: const EdgeInsets.all(8.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
-                        child: Image.file(
-                          File(image.path),
+                        child: Image.network(
+                          image.path.startsWith('http')
+                              ? image.path
+                              : 'http://172.20.10.4:8000${image.path}',
                           height: 100,
                           width: 100,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(Icons.broken_image, size: 100, color: Colors.grey);
+                          },
                         ),
+
                       ),
                     );
                   }).toList(),
@@ -134,7 +140,7 @@ class _GrievanceDetailsState extends State<GrievanceDetails> {
                     children: [
                       Row(
                         children: [
-                          const Text("Submitted on ",
+                          const Text("Submitted: ",
                               style: TextStyle(fontSize: 15, color: Colors.black38)),
                           const SizedBox(width: 5),
                           Text(

@@ -112,7 +112,7 @@ class SupportStaff(models.Model):
     password=models.CharField(max_length=256,null=True)
     gender=models.CharField(max_length=10,null=True,  choices=[('Male', 'Male'), ('Female', 'Female')])
     image=models.ImageField(upload_to='staff_images/',null=True)
-    
+ 
     def __str__(self):
         return self.firstName
 
@@ -150,6 +150,8 @@ class Grievance(models.Model):
     status = models.CharField(max_length=50, default="Pending")  # Pending, In Progress, Resolved
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True, blank=True)
+    assigned_staff = models.ForeignKey('SupportStaff', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_grievances')
+
 
     def __str__(self):
         return self.title
@@ -165,5 +167,23 @@ class GrievImages(models.Model):
 
     def __str__(self):
         return f"Image for {self.grievance.title}"
+    
+class Course(models.Model):
+    DURATION_CHOICES = [
+        ('2 Years', '2 Years'),
+        ('3 Years', '3 Years'),
+        ('4 Years', '4 Years'),
+        ('5 Years', '5 Years'),
+    ]
+        
+    courseId=models.AutoField(primary_key=True,unique=True)
+    deptId = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
+    courseName=models.CharField(max_length=15,null=True)
+    duration = models.CharField(max_length=7, choices=DURATION_CHOICES, null=True)  
+    description = models.TextField(blank=True, null=True)
+    coordinator=models.ForeignKey(Faculty, null=True, blank=True, on_delete=models.SET_NULL, related_name='coordinator')
+    
+    def __str__(self):
+        return self.courseName
 
     

@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Future<void> loginUser() async {
-    final url = "http://192.168.18.214:8000/faculty/login"; // Replace with your Django API URL
+    final url = "http://172.20.10.4:8000/faculty/login"; // Replace with your Django API URL
 
     final response = await http.post(
       Uri.parse(url),
